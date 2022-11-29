@@ -5,6 +5,9 @@ import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lottie/lottie.dart';
 import 'package:linkify/linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:linkable/linkable.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -59,13 +62,26 @@ class _HomepageState extends State<Homepage> {
                 child: Column(
                   children: [
                     Center(
-                      child: Linkify(
-                        text: getResult,
-                        // style: TextStyle(
-                        //     decoration: TextDecoration.underline,
-                        //     color: Colors.blue),
-                      ),
-                    ),
+                        child: Linkify(
+                      onOpen: (link) async {
+                        if (await canLaunchUrl(Uri.parse(link.url))) {
+                          await launchUrl(Uri.parse(link.url));
+                        } else {
+                          throw 'Could not launch $link';
+                        }
+                      },
+                      text: getResult,
+                      style: TextStyle(color: Colors.blue),
+                      linkStyle: TextStyle(color: Colors.deepPurple),
+                    )
+                        //Linkable(text: getResult),
+                        // child: SelectableLinkify(
+                        //   text: getResult,
+                        //   // style: TextStyle(
+                        //   //     decoration: TextDecoration.underline,
+                        //   //     color: Colors.blue),
+                        // ),
+                        ),
                     SizedBox(
                       height: 10,
                     ),
